@@ -58,7 +58,7 @@
 
 
 		// CONTROLLER ==========================================================
-		myAppModule.controller('productsController', function($scope, userFactory){
+		myAppModule.controller('usersController', function($scope, userFactory){
 			// initialize empty array so $scope.users maintains a consistent data type
 			$scope.users = [];
 
@@ -87,7 +87,6 @@
 				userFactory.deleteUsers(x);
 				// clean out the form
 			};
-			
 		});
 	
 	</script>
@@ -97,7 +96,7 @@
 
 <body>
 
-	<div ng-controller="productsController">
+	<div ng-controller="usersController">
 		<form>
 			<h3>First Name: <input type="text" ng-model="newUser.first_name"></h3>
 			<h3>Last Name: <input type="text" ng-model="newUser.last_name"></h3>
@@ -126,7 +125,7 @@
 					<td><a href="#" ng-click="deleteUser(x)">Delete</td>
 				</tr>
 			</tbody>
-
+			
 		</table>
 	</div>
 

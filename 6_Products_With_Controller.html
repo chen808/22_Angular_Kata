@@ -1,0 +1,132 @@
+<!-- Products with ONE controller and ONE factory -->
+<html ng-app="myApp">
+<head>
+	<!-- Angular CDN -->
+	<script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular.min.js'></script>
+
+	<!-- Bootstrap CDN -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+
+	<script type="text/javascript">
+
+		// instantiating our own module
+		var myAppModule = angular.module('myApp', []);
+
+
+		// FACTORY =======================================================================
+		myAppModule.factory('productFactory', function(){
+
+			// product has table
+			var products = [
+				{name:"MacBook Pro", price:1000.99},
+				{name:"MacPro", price:3000.99}
+			];
+
+			// creating empty object
+			var factory = {};
+
+
+			// get product info
+			factory.getProducts = function(callback){
+				callback(products);
+			}
+
+
+			// add product
+			factory.addProducts = function(product){
+				// take the incoming 'product' and add to product has table
+				products.push(product);
+			}
+
+			// deleting product
+			factory.deleteProducts = function(data){
+				// deleting only the incoming data (which holds the index value)
+				products.splice(products.indexOf(data), 1);
+			}
+
+			// returning object
+			return factory;
+
+		}); // end factory
+
+
+
+		// CONTROLLER =====================================================================
+		myAppModule.controller('productController', function($scope, productFactory){
+
+			// instantiate empty array
+			$scope.products = [];
+
+			// request get product info
+			productFactory.getProducts(function(data){
+				$scope.products = data;
+			});
+
+			// adding product passing to factory
+			$scope.addProduct = function(){
+				productFactory.addProducts($scope.newProduct);
+				// clean out the form
+				$scope.newProduct = {};
+			};
+
+			// deleting product
+			$scope.deleteProduct = function(x){
+				productFactory.deleteProducts(x);
+			};
+
+		}); // end controller
+
+	</script>
+</head>
+
+
+
+
+
+<body>
+	<!-- This div block is controlled by productController -->
+	<div ng-controller="productController" align="center">
+		<h1>Product Controller with One Factory</h1>
+		<!-- Create Product -->
+		<form>
+			<h3>Product Name: <input type="text" ng-model="newProduct.name"></h3>
+			<h3>Price: <input type="text" ng-model="newProduct.price"></h3>
+			<!-- clicking create product button will call CONTROLLER addProduct method -->
+			<input type="submit" value="Create Product" ng-click="addProduct()">
+		</form>
+
+		<!-- Show Products -->
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Product Name</th>
+					<th>Price</th>
+					<th>Action<th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<!-- looping through users.  this is being called from controller > getUsers -->
+				<tr ng-repeat="x in products | orderBy:'name'">
+					<td>{{ x.name }}</td>
+					<td>${{ x.price }}</td>
+					<!-- clicking delete calls the CONTROLLER deleteProduct method -->
+					<td><a href="#" ng-click="deleteProduct(x)">Delete</td>
+				</tr>
+			</tbody>
+
+		</table>
+	</div><!-- END of productController -->
+
+
+
+
+</body>
+</html>
