@@ -1,0 +1,79 @@
+<!-- Assignment Directives -->
+<html ng-app = 'myApp'>
+
+<head>
+	<!-- Angular CDN -->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
+
+	<script type="text/javascript">
+
+		// instantiate our own module
+		var myAppModule = angular.module('myApp', []);
+
+
+		myAppModule.controller('foodController', function($scope){
+			$scope.foods = [
+				{name: "pizza"}
+			];
+			$scope.addFood = function(){
+			$scope.foods.push($scope.newFood);
+			$scope.newFood = {};
+		}
+
+		});
+	</script>
+
+
+
+</head>
+
+
+
+
+<body align="center">
+	<div ng-controller = "foodController">
+
+		<!-- Create new favorite food -->
+		<form>
+			Favorite Food: <input type="text" ng-model="newFood.name">
+			<input type="submit" value="add new food" ng-click="addFood()">
+		</form>
+
+
+		<!-- Displaying what user enters here -->
+		<span ng-bind="newFood.name"></span><br/>
+
+
+		<!-- Click to show List of Food -->
+		<label>Click me this checkbox to see the list of food! <input type="checkbox" ng-model="checked"  /></label><br/>
+
+
+		<!-- List of Food -->
+		<div id="foodContainer">
+			<!-- Filter out food -->
+			Filter your food list!: <input type="text" ng-model="filter_name">
+			<ul>
+				<li ng-repeat="food in foods | filter:filter_name | orderBy:'name'" ng-if="checked" >{{ food.name }}</li>
+			</ul>
+		</div>
+	</div>
+
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
