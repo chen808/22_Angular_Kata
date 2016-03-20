@@ -20,6 +20,8 @@
 		// instantiating our own module
 		var myAppModule = angular.module('myApp', []);
 
+
+
 		// FACTORY ============================================================
 		myAppModule.factory('productFactory', function(){
 
@@ -62,7 +64,13 @@
 				// data currently holds the row (ex: name:"MacBook Pro", price:1000.99, quantity:50)
 
 				// now targeting the 'quantity' key and decrementing the value
-				data.quantity--;
+				// running a if-else statment to stop quantity from going below 0
+				if(data.quantity == 0){
+					data.quantity = 0;
+				}
+				else{
+					data.quantity--;
+				}
 			}
 
 			// returning object

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+  <head>
+    <title></title>
+    
+    <!-- THESE TWO VERSIONS BELOW MUST MATCH!!!! -->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular-route.min.js"></script>
+
+    <!-- Bootstrap CDN -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+
+
+    <script>
+    //  inject the ngRoute dependency in the module.
+    var myApp = angular.module('myApp', ['ngRoute']);
+
+
+
+    // ROUTE ==============================================================
+    myApp.config(function ($routeProvider) {
+      $routeProvider
+        .when('/',{
+            templateUrl: 'partials/customizeUsers.html'
+        })
+        .when('/partial2',{
+            templateUrl: 'partials/userList.html'
+        })
+        .otherwise({
+          redirectTo: '/'
+        });
+    });
+
+
+
+    // FACTORY ============================================================
+    myApp.factory('userFactory', function(){
+
+      var users = [
+        {first_name:"Yukihiro", last_name:"Matsumoto", faveLang:"Ruby"},
+        {first_name:"Ryan", last_name:"Dahl", faveLang:"Javascript"},
+        {first_name:"Brendon", last_name:"Eich", faveLang:"Javascript"}
+      ];
+
+      // creating empty object
+      var factory = {};
+
+      // addUser key to the factory object
+      factory.addUsers = function(user){
+        users.push(user);
+      }
+
+      // deleting users
+      factory.deleteUsers = function(data){
+        users.splice(users.indexOf(data), 1)
+      }
+
+      // getting the user's info and performing a rollback
+      factory.getUsers = function(callback){
+        // pass the above users to callback to be used by whoever calls this method
+        callback(users);
+      }
+
+      // returning object
+      return factory
+
+    });
+
+
+
+
+    // CONTROLLER ==========================================================
+    myApp.controller('usersController', function($scope, userFactory){
+      // initialize empty array so $scope.users maintains a consistent data type
+      $scope.users = [];
+
+
+      // run the getStudents method and set $scope data in the callback
+      userFactory.getUsers(function(userData){
+        // using $scope, now we are able to grab users from html
+        $scope.users = userData;
+      });
+
+
+      // add user
+      $scope.addUser = function(){
+        // call the factory method 'factory.addUser'
+        // pass in $scope.newUser which contains the info from html
+        userFactory.addUsers($scope.newUser);
+        // clean out the form
+        $scope.newUser = {};
+      };
+
+
+      // delete user
+      $scope.deleteUser = function(x){
+
+        console.log(x);
+        console.log("omg");
+
+        // call the factory method 'factory deleteUsers'
+        // pass in x, which is the specific index to be deleted
+        userFactory.deleteUsers(x);
+        // clean out the form
+      };
+    });
+
+
+    myApp.controller('usersShowList', function($scope, userFactory){
+
+      // run the getStudents method and set $scope data in the callback
+      userFactory.getUsers(function(userData){
+        // using $scope, now we are able to grab users from html
+        $scope.users = userData;
+      });
+
+    })
+
+    </script>
+  </head>
+
+
+
+
+  <body>
+
+    <div ng-app='myApp'>
+        <a href="#/">Customize</a> | <a href="#/partial2">User List</a>
+
+        <!-- ng-view directive enables us to display various views -->
+        <div ng-view="">
+        </div>
+    </div>
+
+  </body>
+</html>
