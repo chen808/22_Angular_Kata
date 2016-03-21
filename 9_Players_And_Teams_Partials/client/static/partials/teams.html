@@ -1,0 +1,27 @@
+<div ng-controller="teamController">
+    <!-- Show Users -->
+	<table class="table" align="center">
+		<thead>
+			<h1>Teams</h1>
+
+			<form>
+				<h3>Name: <input type="text" ng-model="newTeam"><input type="submit" value="Add Team" ng-click="addTeams()"></h3>
+			</form>
+
+			<!-- Display Player Name and option to delete player -->
+			<tr>
+				<th>Name</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<!-- looping through team.  this is being called from controller > getUsers -->
+			<tr ng-repeat="y in teams track by $index">
+				<td>{{ y }}</td>
+				<td><input type="submit" value="Remove Team" ng-click="deleteTeam(y)"></td>
+			</tr>
+		</tbody>
+
+	</table>
+</div>

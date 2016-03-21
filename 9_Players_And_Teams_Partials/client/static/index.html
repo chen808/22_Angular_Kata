@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+  <head>
+    <title></title>
+    
+    <!-- THESE TWO VERSIONS BELOW MUST MATCH!!!! -->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular-route.min.js"></script>
+
+    <!-- Bootstrap CDN -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+
+
+    <script>
+    //  inject the ngRoute dependency in the module.
+    var myApp = angular.module('myApp', ['ngRoute']);
+
+
+
+    // ROUTE ==============================================================
+    myApp.config(function ($routeProvider) {
+      $routeProvider
+        .when('/',{
+            templateUrl: 'partials/players.html'
+        })
+        .when('/partial2',{
+            templateUrl: 'partials/teams.html'
+        })
+        .when('/partial3',{
+            templateUrl: 'partials/association.html'
+        })
+        .otherwise({
+          redirectTo: '/'
+        });
+    });
+
+
+
+    // FACTORY (players) ============================================================
+    myApp.factory('userFactory', function(){
+
+      var users = ["Ryan", "Clint", "David", "Dan"];
+
+      // creating empty object
+      var factory = [];
+
+      // addUser key to the factory object
+      factory.addUsers = function(user){
+        users.push(user);
+      }
+
+      // deleting users
+      factory.deleteUsers = function(data){
+        users.splice(users.indexOf(data), 1);
+      }
+
+      // getting the user's info and performing a rollback
+      factory.getUsers = function(callback){
+        // pass the above users to callback to be used by whoever calls this method
+        callback(users);
+      }
+
+      // returning object
+      return factory
+
+    });
+
+
+    // FACTORY (teams and association) =============================================
+    myApp.factory('teamFactory', function(){
+      // array of teams
+      var teams = ["Raiders", "Seahawks", "49ers"];
+
+      // assigning user to team
+      var assigns = [
+        {name:"Joey", team:"Packers"},
+        {name:"Brian", team:"Texans"}
+      ];
+
+      var factory = {};
+
+      // assigning user to teams
+      var association = [
+        {name:"JoJo", team:"Raiders"},
+      ];
+
+      // creating empty object
+      var factory = [];
+
+      // add team
+      factory.addTeams = function(team){
+        teams.push(team);
+      }
+
+      // add association (name + team)
+      factory.addAssociation = function(data){
+        association.push(data);
+      }
+
+      // delete team
+      factory.deleteTeams = function(data){
+        teams.splice(teams.indexOf(data), 1);
+      }
+
+      // get teams
+      factory.getTeams = function(callback){
+        callback(teams);
+      }
+
+      // get assigns
+      factory.getAssigned = function(callback){
+        callback(assigns);
+      }
+
+      // delete assigned
+      factory.deleteAssign = function(data){
+        assigns.splice(assigns.indexOf(data), 1);
+      }
+
+      // add assigned
+      factory.addAssigns = function(add){
+        assigns.push(add);
+      }
+
+      // returning object
+      return factory;
+
+    });
+
+
+
+
+
+    // CONTROLLER (user) ==========================================================
+    myApp.controller('usersController', function($scope, userFactory){
+      // initialize empty array so $scope.users maintains a consistent data type
+      $scope.users = [];
+
+
+      // run the getStudents method and set $scope data in the callback
+      userFactory.getUsers(function(userData){
+        // using $scope, now we are able to grab users from html
+        $scope.users = userData;
+      });
+
+
+      // add user
+      $scope.addUser = function(){
+        // call the factory method 'factory.addUser'
+        // pass in $scope.newUser which contains the info from html
+        userFactory.addUsers($scope.newUser);
+        // clean out the array (this causes the form to go blank after entering name)
+        $scope.newUser = [];
+      };
+
+
+      // delete user
+      $scope.deleteUser = function(x){
+        // call the factory method 'factory deleteUsers'
+        // pass in x, which is the specific index to be deleted
+        userFactory.deleteUsers(x);
+        // clean out the form
+      };
+    });
+
+
+
+
+    // CONTROLLER (teams) ========================================================
+    myApp.controller('teamController', function($scope, teamFactory){
+      $scope.teams = [];
+
+      // run the getStudents method and set $scope data in the callback
+      teamFactory.getTeams(function(teamData){
+        // using $scope, now we are able to grab users from html
+        $scope.teams = teamData;
+      });
+
+
+      // add team
+      $scope.addTeams = function(){
+        teamFactory.addTeams($scope.newTeam);
+        $scope.newTeam=[];
+      };
+
+
+      // delete team
+      $scope.deleteTeam = function(y){
+        teamFactory.deleteTeams(y);
+      };
+    })
+
+
+     // CONTROLLER (association) ========================================================
+     myApp.controller('associationController', function($scope, teamFactory, userFactory){
+
+
+      // get all users
+      userFactory.getUsers(function(userData){
+        // using $scope, now we are able to grab users from html
+        $scope.users = userData;
+      });
+
+
+      // get all teams
+      teamFactory.getTeams(function(teamData){
+        // using $scope, now we are able to grab users from html
+        $scope.teams = teamData;
+      });
+
+
+      // get all assigned
+      teamFactory.getAssigned(function(data){
+        $scope.assigned = data;
+      })
+
+
+      // delete team assigned
+      $scope.deleteAssign = function(z){
+        teamFactory.deleteAssign(z);
+      };
+
+
+      // add assigned team
+      $scope.addAssign = function(){
+        teamFactory.addAssigns($scope.newAssign);
+        $scope.newAssign = {};
+      }
+      
+
+     })
+
+    </script>
+  </head>
+
+
+
+
+  <body>
+
+    <div ng-app='myApp'>
+        <a href="#/">Players</a> | <a href="#/partial2">Teams</a> | <a href="#/partial3">Associations</a>
+
+        <!-- ng-view directive enables us to display various views -->
+        <div ng-view="">
+        </div>
+    </div>
+
+  </body>
+</html>

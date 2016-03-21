@@ -1,0 +1,43 @@
+<div ng-controller="associationController">
+    <!-- Show Users -->
+	<table class="table" align="center">
+		<thead>
+			<h1>Association</h1>
+
+			<!-- Dropdown menu containing available users -->
+
+			<form>
+				<h4>Choose Your Player</h4>
+				<select ng-model="newAssign.name" >
+					Choose Your Player<option  ng-repeat="i in users" selected="{{ i }}">{{ i }}</option>
+				</select>
+
+				<!-- Dropdown menu containing available teams -->
+				<h4>Choose Your Team</h4>
+				<select ng-model="newAssign.team" >
+					<option ng-repeat="j in teams" selected="{{ j }}">{{ j }}</option>
+				</select>
+
+				<br><br><input type="submit" value="Create Team" ng-click="addAssign()" ><br><br>
+
+			</form>
+			
+
+			<!-- Display Player Name and option to delete player -->
+			<tr>
+				<th>Name</th>
+				<th>Team</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<!-- looping through team.  this is being called from controller > getUsers -->
+			<tr ng-repeat="z in assigned track by $index">
+				<td>{{ z.name }}</td>
+				<td>{{ z.team }}</td>
+				<td><input type="submit" value="Remove Team" ng-click="deleteAssign(z)"></td>
+			</tr>
+		</tbody>
+
+	</table>
+</div>

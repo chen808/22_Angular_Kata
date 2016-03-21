@@ -1,0 +1,27 @@
+<div ng-controller="usersController">
+    <!-- Show Users -->
+	<table class="table" align="center">
+		<thead>
+			<h1>Players</h1>
+
+			<form>
+				<h3>Name: <input type="text" ng-model="newUser"><input type="submit" value="Add Player " ng-click="addUser()"></h3>
+			</form>
+
+			<!-- Display Player Name and option to delete player -->
+			<tr>
+				<th>Name</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<!-- looping through users.  this is being called from controller > getUsers -->
+			<tr ng-repeat="x in users track by $index"><!-- 'track by $index' takes care of ngrepeat duplicate errors -->
+				<td>{{ x }}</td>
+				<td><input type="submit" value="Remove Player" ng-click="deleteUser(x)"></td>
+			</tr>
+		</tbody>
+
+	</table>
+</div>
